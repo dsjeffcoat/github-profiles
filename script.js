@@ -4,10 +4,13 @@ const main = document.getElementById('main')
 const form = document.getElementById('form')
 const search = document.getElementById('search')
 
+
+// Fetch calls 
 async function getUser(username) {
     try {
         const res = await axios(API_URL + username)
         createUserProfile(res.data)
+        getRepos(username)
     } catch (err) {
         if(err.response.status == 404) {
             createErrorCard('No profile found with this username')
@@ -15,7 +18,18 @@ async function getUser(username) {
     }
 }
 
+async function getRepos(username) {
+    try {
+        const res = await axios(API_URL + username + '/repos?sort=created')
+        createRepoList(res.data)
+    } catch (err) {
+        createErrorCard('Problem fetching repositories')
+    }
+}
+
 // getUser('dsjeffcoat')
+
+// Card functionality
 
 function createUserProfile(user) {
     const cardHTML = `
@@ -50,6 +64,23 @@ function createErrorCard(message) {
     `
 
     main.innerHTML = cardHTML
+}
+
+function createRepoList(repos) {
+    const reposEl = document.getElementById('repos')
+
+    repos
+        .slice(0, 5)
+        .forEach(repo => {
+        const repoURL = document.createElement('a')
+        repoURL.classList.add('repo')
+        repoURL.href = repo.html_url
+        repoURL.target = '_blank'
+        repoURL.innerText = repo.name
+        
+
+        reposEl.appendChild(repoURL)
+    })
 }
 
 form.addEventListener('submit', (e) => {
