@@ -80,7 +80,11 @@ body {
 }
 
 .user-info h2 {
-    margin-top: 0;
+    margin: 0 auto;
+}
+
+.user-info h4 {
+    margin: 3px auto;
 }
 
 .user-info ul {
